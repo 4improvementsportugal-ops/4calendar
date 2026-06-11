@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>4CALENDAR — Planeamento</title>
+<noscript><div style="background:#e03131;color:#fff;padding:16px;font-size:16px;font-weight:bold">⚠️ JavaScript está DESATIVADO neste browser. O calendário não consegue carregar.</div></noscript>
 <style>
 :root { color-scheme: light; }
 * { box-sizing: border-box; }
@@ -628,8 +629,4 @@ async function loadLive(){
   try{
     loadCustom(); fromSnapshot();
     try{ render(); }catch(re){
-      document.getElementById("src").textContent="❌ RENDER ERR: "+re.message+" @ "+re.stack.split("\n")[1];
-      return;
-    }
-    document.getElementById("src").textContent="Snapshot de 11 jun 2026 — a tentar dados em direto do ClickUp…";
-    const ok=await loadL
+      document.getElementById("src").textContent="❌ RENDER ERR: "+
