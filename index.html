@@ -292,23 +292,23 @@ const SNAPSHOT={
   ["Atualizar calendário de reuniões GHL - Junho","backlog",1781233200000,"https://app.clickup.com/t/86ahztawc"],
   ["[DS PRIVATE] Criativos Troca de Casa","backlog",1780974000000,"https://app.clickup.com/t/86ahxyx6k"],
   ["[ADILSON] Novos Criativos","backlog",1780974000000,"https://app.clickup.com/t/86ahxyv13"],
-  ["[JOÃO&HELENA] Novos Criativos","em produção",1780974000000,"https://app.clickup.com/t/86ahxyjv0"],
+  ["[JOAO&HELENA] Novos Criativos","em produção",1780974000000,"https://app.clickup.com/t/86ahxyjv0"],
   ["[ERA BENFICA] NOVOS CRIATIVOS","entrega cliente",1781060400000,"https://app.clickup.com/t/86ahxyh92"],
   ["[PRACTIC POOL] NOVOS CRIATIVOS","backlog",1781060400000,"https://app.clickup.com/t/86ahxyd25"],
   ["[HALLSTARS] Novos Criativos","entrega cliente",1781074800000,"https://app.clickup.com/t/86ahxycr6"],
   ["[EQUIPA SOARES] Novos Criativos","em produção",1781060400000,"https://app.clickup.com/t/86ahxyc5p"],
   ["[JORGE] Novos Criativos","em produção",1781060400000,"https://app.clickup.com/t/86ahxyb3e"],
   ["[PEDRO BERNARDES] Novos Criativos","backlog",1781060400000,"https://app.clickup.com/t/86ahxyama"],
-  ["[DENTAL FIXE GUIMARÃES] Novos Criativos","em produção",1780974000000,"https://app.clickup.com/t/86ahxy9cy"],
-  ["[EQUIPA SOARES] CRIAÇÃO DE SIMULADOR - TROCA DE CASA","em produção",1780628400000,"https://app.clickup.com/t/86ahw7a6w"],
+  ["[DENTAL FIXE GUIMARAES] Novos Criativos","em produção",1780974000000,"https://app.clickup.com/t/86ahxy9cy"],
+  ["[EQUIPA SOARES] CRIACAO DE SIMULADOR - TROCA DE CASA","em produção",1780628400000,"https://app.clickup.com/t/86ahw7a6w"],
   ["Novos Criativos Troca de Casa","backlog",1780628400000,"https://app.clickup.com/t/86ahw7a6z"],
   ["[EQUIPA SOARES] Criativos Troca de Casa","backlog",1780455600000,"https://app.clickup.com/t/86ahv6b1v"],
   ["[PEDRO BERNARDES] Criativos Troca de Casa","entrega cliente",1780455600000,"https://app.clickup.com/t/86ahv69n3"],
-  ["[JOÃO&HELENA] Novos Criativos","entrega cliente",1780455600000,"https://app.clickup.com/t/86ahu5zaw"],
+  ["[JOAO&HELENA] Novos Criativos","entrega cliente",1780455600000,"https://app.clickup.com/t/86ahu5zaw"],
   ["[DS PRIVATE] Novos Criativos","entrega cliente",1780455600000,"https://app.clickup.com/t/86ahu5z2t"],
   ["[ADILSON] Cronograma de redes sociais","aprovado",null,"https://app.clickup.com/t/86ahjhxje"],
   ["[SA TEAM] Landing Page","entrega cliente",1780297200000,"https://app.clickup.com/t/86ahc526n"],
-  ["[CSA] Atualização de Landing Page","aguardando informação",1780297200000,"https://app.clickup.com/t/86ah1pj51"]
+  ["[CSA] Atualizacao de Landing Page","aguardando informação",1780297200000,"https://app.clickup.com/t/86ah1pj51"]
  ]
 };
 let current="iris", view="semana", tz="br";
@@ -320,12 +320,12 @@ function weekDaysOf(date){ const day=(date.getDay()+6)%7; const mon=new Date(dat
 function sameDay(a,b){return a.getFullYear()==b.getFullYear()&&a.getMonth()==b.getMonth()&&a.getDate()==b.getDate();}
 function sameWeek(a,b){ return sameDay(weekDaysOf(a)[0], weekDaysOf(b)[0]); }
 const DOW=["Seg","Ter","Qua","Qui","Sex"];
-const DOW7=["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"];
+const DOW7=["Seg","Ter","Qua","Qui","Sex","Sab","Dom"];
 const MON=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
-const MONFULL=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const MONFULL=["Janeiro","Fevereiro","Marco","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 function isWeekday(d){const w=d.getDay();return w>=1&&w<=5;}
 function firstBizOfMonth(y,m){let d=new Date(y,m,1);while(!isWeekday(d))d.setDate(d.getDate()+1);return d;}
-function pavFires(c,monthIdx){ return c.pav.every===1 || (monthIdx%2===1); } // bimensais: abr/jun/ago/out/dez/fev (índice ímpar 0-based; últimas em abril/2026)
+function pavFires(c,monthIdx){ return c.pav.every===1 || (monthIdx%2===1); }
 function nextFree(start,dur,reserved){
   let s=Math.max(start,WORK_START), moved=true;
   while(moved){ moved=false; for(const r of reserved){ if(s<r[1] && s+dur>r[0]){ s=r[1]; moved=true; } } }
@@ -358,21 +358,20 @@ function autoTasks(person, real, days, rawAll){
   const endW=new Date(days[4].getFullYear(),days[4].getMonth(),days[4].getDate(),23,59,59);
   const inWeek=dt=>dt>=days[0]&&dt<=endW;
   const wStart=+days[0], wEnd=+endW; rawAll=rawAll||[];
-  // Existe tarefa para este cliente+tipo? Conta: (a) tarefas ativas já mostradas nesta semana; (b) QUALQUER tarefa (mesmo em estado excluído) com data nesta semana. Assim 1 tarefa no ClickUp cancela a auto nessa semana, e na próxima semana a auto regenera.
   function exists(rx,c){ return real.some(t=>rx.test(t.name)&&matchClient(t.name,c)) || rawAll.some(t=>rx.test(t.name)&&matchClient(t.name,c)&&t.due_date&&+t.due_date>=wStart&&+t.due_date<=wEnd); }
   const out=[]; const cs=personClients(person);
   for(const c of cs){
     if(!exists(/criativ/i,c))
-      out.push({name:"Criativos ("+CRIATIVOS_SEMANA+") — "+c.name, type:"Criativos", dur:CRIATIVOS_SEMANA*MIN_POR_CRIATIVO, color:"#0ca678", client:c.name, priority:"normal", due_date:null, auto:true});
+      out.push({name:"Criativos ("+CRIATIVOS_SEMANA+") - "+c.name, type:"Criativos", dur:CRIATIVOS_SEMANA*MIN_POR_CRIATIVO, color:"#0ca678", client:c.name, priority:"normal", due_date:null, auto:true});
   }
   const nextMonth=new Date(days[0].getFullYear(), days[0].getMonth()+1, 1);
   const cronDate=new Date(nextMonth); cronDate.setDate(cronDate.getDate()-7);
   if(inWeek(cronDate)) for(const c of cs){ if(c.rs && !exists(/cronograma/i,c))
-    out.push({name:"Cronograma "+MON[nextMonth.getMonth()]+" — "+c.name, type:"Cronograma", dur:120, color:"#6741d9", client:c.name, priority:"high", due_date:+cronDate, auto:true}); }
+    out.push({name:"Cronograma "+MON[nextMonth.getMonth()]+" - "+c.name, type:"Cronograma", dur:120, color:"#6741d9", client:c.name, priority:"high", due_date:+cronDate, auto:true}); }
   if(person==="iris"){ const pavAll=allClients().filter(c=>c.pav);
     for(let i=0;i<5;i++){ const d=days[i]; const fb=firstBizOfMonth(d.getFullYear(),d.getMonth());
       if(sameDay(d,fb)) for(const c of pavAll){ if(pavFires(c,d.getMonth()) && !real.some(t=>/pav|grava/i.test(t.name)&&matchClient(t.name,c)))
-        out.push({name:"Scripts + agendar gravações — "+c.name+" ("+c.pav.n+(c.pav.every>1?" cada 2m":"/mes")+")", type:"PAV (audiovisual)", dur:60, color:"#f08c00", client:c.name, priority:"high", due_date:+d, auto:true}); } }
+        out.push({name:"Scripts + agendar gravacoes - "+c.name+" ("+c.pav.n+(c.pav.every>1?" cada 2m":"/mes")+")", type:"PAV (audiovisual)", dur:60, color:"#f08c00", client:c.name, priority:"high", due_date:+d, auto:true}); } }
   }
   return out;
 }
@@ -380,48 +379,48 @@ function fmt(m){ m=((m%1440)+1440)%1440; const h=Math.floor(m/60),mm=m%60;return
 function fmtD(m){ return fmt(m+offMin()); }
 function chip(v,l){return '<div class="chip"><b>'+v+'</b>'+l+'</div>';}
 function recCard(d,c){return '<div class="rec"><div class="d">'+d+'</div><div class="c">'+c+'</div></div>';}
-function esc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function esc(s){return (s||"").replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
 function short(s){return s.replace(/^\[[^\]]+\]\s*/,"").slice(0,46);}
-function prTag(p){ if(p==="urgent") return ' <span class="pr">🔴 urgente</span>'; if(p==="high") return ' <span class="pr">🟠 alta</span>'; return ''; }
+function prTag(p){ if(p==="urgent") return ' <span class="pr">urgente</span>'; if(p==="high") return ' <span class="pr">alta</span>'; return ''; }
 function recurringHTML(person, refDate){
   const cs=personClients(person);
   const base=refDate||new Date();
   const next=new Date(base.getFullYear(), base.getMonth()+1, 1);
   let fb=new Date(next); while(fb.getDay()===0||fb.getDay()===6) fb.setDate(fb.getDate()+1);
   const cron=new Date(next); cron.setDate(cron.getDate()-7);
-  const dstr=d=>d.getDate()+" "+MON[d.getMonth()];
-  const rsList=cs.filter(c=>c.rs).map(c=>c.name);
-  const pavList=(person==="iris"?allClients().filter(c=>c.pav && pavFires(c, base.getMonth())):[]);
+  const dstr=function(d){return d.getDate()+" "+MON[d.getMonth()];};
+  const rsList=cs.filter(function(c){return c.rs;}).map(function(c){return c.name;});
+  const pavList=(person==="iris"?allClients().filter(function(c){return c.pav && pavFires(c, base.getMonth());}): []);
   let rec="";
-  rec+=recCard("Reuniões de equipa","4DAILY 07:00 BR / 11:00 PT (dias úteis) · 4INNOVATION 13:00 BR / 17:00 PT (só sextas)");
-  rec+=recCard("Cronogramas "+MON[next.getMonth()]+" — entrega "+dstr(cron),"1 sem. antes de "+dstr(next)+" · "+(rsList.length?rsList.join(", "):"—"));
-  if(pavList.length) rec+=recCard("Scripts + agendar gravações — "+dstr(fb),"1º dia útil do mês · "+pavList.map(c=>c.name+" ("+c.pav.n+(c.pav.every>1?" cada 2m":"/mes")+")").join(", "));
-  rec+=recCard("Reuniões de alinhamento (mensal)","1 por cliente c/ redes sociais: "+(rsList.length?rsList.join(", "):"—"));
-  rec+=recCard("Criativos","15/semana por projeto (60 min) — todos os clientes");
-  rec+=recCard("Landing pages","On-demand — só quando o cliente pede");
+  rec+=recCard("Reunioes de equipa","4DAILY 07:00 BR / 11:00 PT (dias uteis) - 4INNOVATION 13:00 BR / 17:00 PT (so sextas)");
+  rec+=recCard("Cronogramas "+MON[next.getMonth()]+" - entrega "+dstr(cron),"1 sem. antes de "+dstr(next)+" - "+(rsList.length?rsList.join(", "):"--"));
+  if(pavList.length) rec+=recCard("Scripts + agendar gravacoes - "+dstr(fb),"1o dia util do mes - "+pavList.map(function(c){return c.name+" ("+c.pav.n+(c.pav.every>1?" cada 2m":"/mes")+")";}).join(", "));
+  rec+=recCard("Reunioes de alinhamento (mensal)","1 por cliente c/ redes sociais: "+(rsList.length?rsList.join(", "):"--"));
+  rec+=recCard("Criativos","15/semana por projeto (60 min) - todos os clientes");
+  rec+=recCard("Landing pages","On-demand - so quando o cliente pede");
   return rec;
 }
 function legendHTML(){
   const seen={}; let leg="";
-  [...RULES,DEFAULT_RULE].forEach(r=>{if(!seen[r.type]){seen[r.type]=1; leg+='<span><i style="background:'+r.color+'"></i>'+r.type+'</span>';}});
-  leg+='<span><i style="background:#7048e8"></i>Reuniões (4DAILY/4INNOVATION)</span>';
+  [...RULES,DEFAULT_RULE].forEach(function(r){if(!seen[r.type]){seen[r.type]=1; leg+='<span><i style="background:'+r.color+'"></i>'+r.type+'</span>';}});
+  leg+='<span><i style="background:#7048e8"></i>Reunioes (4DAILY/4INNOVATION)</span>';
   leg+='<span><i style="background:#eef1ff;border:1px dashed #aab4f5"></i>Retrabalhos (reservado)</span>';
   document.getElementById("legend").innerHTML=leg;
 }
-function setP(p){current=p; document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.p===p)); render();}
+function setP(p){current=p; document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("active",t.dataset.p===p);}); render();}
 function setView(v){ view=v;
-  document.querySelectorAll(".vtab").forEach(t=>t.classList.toggle("active",t.dataset.v===v));
+  document.querySelectorAll(".vtab").forEach(function(t){t.classList.toggle("active",t.dataset.v===v);});
   document.getElementById("grid").style.display = v==="semana"?"":"none";
   document.getElementById("monthgrid").style.display = v==="mes"?"":"none";
   document.getElementById("addpanel").style.display = v==="add"?"":"none";
   document.getElementById("weeknav").style.display = v==="semana"?"flex":"none";
   document.getElementById("monthnav").style.display = v==="mes"?"flex":"none";
   document.getElementById("side").style.display = v==="add"?"none":"";
-  document.getElementById("ovftitle").textContent = v==="mes"?"Notas":"Não coube esta semana (overflow)";
+  document.getElementById("ovftitle").textContent = v==="mes"?"Notas":"Nao coube esta semana (overflow)";
   if(v==="add") renderCustomList();
   render();
 }
-function toggleTZ(){ tz = tz==="br"?"pt":"br"; document.getElementById("tzbtn").textContent = tz==="br"?"🇧🇷 Brasil":"🇵🇹 Portugal"; render(); }
+function toggleTZ(){ tz = tz==="br"?"pt":"br"; document.getElementById("tzbtn").textContent = tz==="br"?"BR Brasil":"PT Portugal"; render(); }
 function moveWeek(n){ const d=new Date(weekCursor); d.setDate(d.getDate()+7*n); weekCursor=d; render(); }
 function thisWeek(){ weekCursor=new Date(); render(); }
 function moveMonth(n){ monthCursor.setMonth(monthCursor.getMonth()+n); render(); }
@@ -432,7 +431,7 @@ function riskDstr(ms){ const d=new Date(+ms); return d.getDate()+" "+MON[d.getMo
 function soonLabel(ms){
   const t0=new Date(); t0.setHours(0,0,0,0);
   const dd=Math.round((+new Date(new Date(+ms).setHours(0,0,0,0))-+t0)/86400000);
-  if(dd<=0) return "HOJE"; if(dd===1) return "amanhã"; return riskDstr(ms);
+  if(dd<=0) return "HOJE"; if(dd===1) return "amanha"; return riskDstr(ms);
 }
 function renderRisk(){
   const box=document.getElementById("riskbox"); if(!box) return;
@@ -441,25 +440,25 @@ function renderRisk(){
   const days=weekDaysOf(new Date());
   const wStart=+days[0], wEnd=+new Date(days[4].getFullYear(),days[4].getMonth(),days[4].getDate(),23,59,59);
   const act=(DATA[current]||[]).filter(isActive);
-  const realWeek=act.filter(t=>t.due_date && +t.due_date>=wStart && +t.due_date<=wEnd);
-  const autos=autoTasks(current, realWeek, days, (DATA[current]||[])).filter(t=>t.due_date);
-  const all=act.filter(t=>t.due_date).concat(autos);
-  const late=all.filter(t=>+t.due_date<today0).sort((a,b)=>+a.due_date-+b.due_date);
-  const soon=all.filter(t=>+t.due_date>=today0 && +t.due_date<=h48).sort((a,b)=>+a.due_date-+b.due_date);
+  const realWeek=act.filter(function(t){return t.due_date && +t.due_date>=wStart && +t.due_date<=wEnd;});
+  const autos=autoTasks(current, realWeek, days, (DATA[current]||[])).filter(function(t){return t.due_date;});
+  const all=act.filter(function(t){return t.due_date;}).concat(autos);
+  const late=all.filter(function(t){return +t.due_date<today0;}).sort(function(a,b){return +a.due_date-+b.due_date;});
+  const soon=all.filter(function(t){return +t.due_date>=today0 && +t.due_date<=h48;}).sort(function(a,b){return +a.due_date-+b.due_date;});
   const who=current==="iris"?"Iris":"Lucas";
   if(late.length+soon.length===0){
     box.className="risk ok"; box.style.display="";
-    box.innerHTML='<h3>✅ Sem tarefas em risco — '+who+' (sem atrasos nem prazos nas próximas 48h)</h3>';
+    box.innerHTML='<h3>OK Sem tarefas em risco - '+who+' (sem atrasos nem prazos nas proximas 48h)</h3>';
     return;
   }
   box.className="risk"; box.style.display="";
-  let h='<h3>⚠️ EM RISCO — '+who+': '+(late.length?late.length+' atrasada'+(late.length>1?'s':''):'')+(late.length&&soon.length?' · ':'')+(soon.length?soon.length+' com prazo ≤48h':'')+'</h3><div class="risklist">';
+  let h='<h3>EM RISCO - '+who+': '+(late.length?late.length+' atrasada'+(late.length>1?'s':''):'')+(late.length&&soon.length?' - ':'')+(soon.length?soon.length+' com prazo menos de 48h':'')+'</h3><div class="risklist">';
   for(const t of soon){
     h+='<div class="ri"><span>'+(t.auto?'<span class="autotag">auto</span> ':'')+riskLink(t)+'</span><span class="soon">prazo '+soonLabel(t.due_date)+'</span></div>';
   }
   for(const t of late){
     const dd=Math.max(1,Math.round((today0-+t.due_date)/86400000));
-    h+='<div class="ri"><span>'+(t.auto?'<span class="autotag">auto</span> ':'')+riskLink(t)+'</span><span class="late">'+dd+'d atraso · '+riskDstr(t.due_date)+'</span></div>';
+    h+='<div class="ri"><span>'+(t.auto?'<span class="autotag">auto</span> ':'')+riskLink(t)+'</span><span class="late">'+dd+'d atraso - '+riskDstr(t.due_date)+'</span></div>';
   }
   h+='</div>';
   box.innerHTML=h;
@@ -470,26 +469,25 @@ function renderWeek(){
   const wStart=+days[0], wEnd=+new Date(days[4].getFullYear(),days[4].getMonth(),days[4].getDate(),23,59,59);
   const isCur=sameWeek(weekCursor,new Date());
   const allReal=(DATA[current]||[]).filter(isActive);
-  // Backlog: tarefas atrasadas dos últimos 2 meses + sem data -> a fazer a partir de 15 jun 2026
   const t0b=new Date(); t0b.setHours(0,0,0,0);
   const twoMo=new Date(); twoMo.setMonth(twoMo.getMonth()-2); twoMo.setHours(0,0,0,0);
   const backlogWeek0=weekDaysOf(new Date(2026,5,15))[0];
   const isBacklogWeek=sameDay(days[0],backlogWeek0);
-  let realTasks=allReal.filter(t=>t.due_date && +t.due_date>=wStart && +t.due_date<=wEnd);
-  if(isBacklogWeek) realTasks=realTasks.concat(allReal.filter(t=>{
+  let realTasks=allReal.filter(function(t){return t.due_date && +t.due_date>=wStart && +t.due_date<=wEnd;});
+  if(isBacklogWeek) realTasks=realTasks.concat(allReal.filter(function(t){
     if(t.due_date && +t.due_date>=wStart && +t.due_date<=wEnd) return false;
     if(!t.due_date) return true;
     const dd=+t.due_date; return dd<+t0b && dd>=+twoMo;
   }));
   const tasks=realTasks.concat(autoTasks(current, realTasks, days, (DATA[current]||[])));
   const sc=buildSchedule(tasks, days);
-  document.getElementById("weeklabel").textContent=days[0].getDate()+" "+MON[days[0].getMonth()]+" – "+days[4].getDate()+" "+MON[days[4].getMonth()]+" "+days[4].getFullYear();
-  document.getElementById("weekinfo").textContent="horário "+(tz==="br"?"Brasil":"Portugal")+(isCur?" · semana atual":"")+(isBacklogWeek?" · inclui backlog (atrasos últimos 2 meses)":"");
-  const nAuto=tasks.filter(t=>t.auto).length;
-  const nOv=sc.placed.filter(x=>x.overdue).length+sc.overflow.filter(x=>x.overdue).length;
+  document.getElementById("weeklabel").textContent=days[0].getDate()+" "+MON[days[0].getMonth()]+" - "+days[4].getDate()+" "+MON[days[4].getMonth()]+" "+days[4].getFullYear();
+  document.getElementById("weekinfo").textContent="horario "+(tz==="br"?"Brasil":"Portugal")+(isCur?" - semana atual":"")+(isBacklogWeek?" - inclui backlog (atrasos ultimos 2 meses)":"");
+  const nAuto=tasks.filter(function(t){return t.auto;}).length;
+  const nOv=sc.placed.filter(function(x){return x.overdue;}).length+sc.overflow.filter(function(x){return x.overdue;}).length;
   document.getElementById("banner").innerHTML=
     chip(realTasks.length,"a fazer (ClickUp)")+
-    chip(nAuto,"auto (função)")+
+    chip(nAuto,"auto (funcao)")+
     chip('<span style="color:#e03131">'+nOv+'</span>',"atrasadas")+
     chip(sc.placed.length,"agendadas")+
     chip(sc.overflow.length,"em overflow");
@@ -498,7 +496,7 @@ function renderWeek(){
   let html='<div class="gh"></div>';
   for(let d=0; d<5; d++){
     const dt=days[d]; const isT=sameDay(dt,today);
-    html+='<div class="gh'+(isT?' today':'')+'">'+DOW[d]+'<small>'+dt.getDate()+' '+MON[dt.getMonth()]+(isT?' • hoje':'')+'</small></div>';
+    html+='<div class="gh'+(isT?' today':'')+'">'+DOW[d]+'<small>'+dt.getDate()+' '+MON[dt.getMonth()]+(isT?' hoje':'')+'</small></div>';
   }
   html+='<div class="axis">';
   for(let h=7; h<=18; h++){ const hh=((h+(tz==="pt"?4:0))%24); html+='<div>'+(hh<10?'0':'')+hh+':00</div>'; }
@@ -510,29 +508,32 @@ function renderWeek(){
     const lt=(LUNCH_START-WORK_START)/60*PXH, lh=(LUNCH_END-LUNCH_START)/60*PXH;
     html+='<div class="lunch" style="top:'+lt+'px;height:'+lh+'px"></div>';
     const rt=(REWORK_START-WORK_START)/60*PXH, rh=(WORK_END-REWORK_START)/60*PXH;
-    html+='<div class="block rework" style="top:'+rt+'px;height:'+(rh-2)+'px" title="Reservado para alterações/ajustes pedidos por clientes">🛠️ Retrabalhos<br>& ajustes</div>';
-    for(const mt of MEETINGS){
+    html+='<div class="block rework" style="top:'+rt+'px;height:'+(rh-2)+'px" title="Reservado para alteracoes/ajustes pedidos por clientes">Retrabalhos e ajustes</div>';
+    for(let mi=0; mi<MEETINGS.length; mi++){
+      const mt=MEETINGS[mi];
       if(!mt.days.includes(dayDate.getDay())) continue;
       const mtop=(mt.br-WORK_START)/60*PXH, mh=mt.dur/60*PXH;
-      html+='<div class="block meet" style="top:'+mtop+'px;height:'+(mh-2)+'px;background:'+mt.color+'" title="'+mt.name+' · '+fmt(mt.br)+' BR / '+fmt(mt.br+TZ_OFFSET)+' PT">'+mt.name+'<span style="font-weight:500;opacity:.9">'+fmtD(mt.br)+'</span></div>';
+      html+='<div class="block meet" style="top:'+mtop+'px;height:'+(mh-2)+'px;background:'+mt.color+'" title="'+mt.name+' - '+fmt(mt.br)+' BR / '+fmt(mt.br+TZ_OFFSET)+' PT">'+mt.name+'<span style="font-weight:500;opacity:.9">'+fmtD(mt.br)+'</span></div>';
     }
-    for(const b of sc.placed.filter(x=>x.day===d)){
-      const top=(b.start-WORK_START)/60*PXH, h=Math.max((b.end-b.start)/60*PXH,14);
+    const dayBlocks=sc.placed.filter(function(x){return x.day===d;});
+    for(let bi=0; bi<dayBlocks.length; bi++){
+      const b=dayBlocks[bi];
+      const top=(b.start-WORK_START)/60*PXH, bh=Math.max((b.end-b.start)/60*PXH,14);
       const a=b.url?'<a href="'+b.url+'" target="_blank">':''; const az=b.url?'</a>':'';
       const ring=b.overdue?';outline:2px solid #e03131;outline-offset:-2px':'';
       const pr=prTag(b.priority);
-      const warn=b.overdue?'<span class="warn">⚠ atrasada</span> ':'';
+      const warn=b.overdue?'<span class="warn">atrasada</span> ':'';
       const at=b.auto?'<span class="autotag">auto</span>':'';
-      html+='<div class="block'+(b.auto?' autob':'')+'" style="top:'+top+'px;height:'+(h-2)+'px;background:'+b.color+ring+'" title="'+esc(b.name)+(b.auto?' — gerada pela função (não está no ClickUp)':' — '+b.status)+(b.overdue?' (ATRASADA)':'')+'">'+
-            a+'<div class="t">'+fmtD(b.start)+' · '+b.type+pr+at+'</div><div class="n">'+warn+esc(short(b.name))+'</div>'+az+'</div>';
+      html+='<div class="block'+(b.auto?' autob':'')+'" style="top:'+top+'px;height:'+(bh-2)+'px;background:'+b.color+ring+'" title="'+esc(b.name)+(b.auto?' - gerada pela funcao':' - '+b.status)+(b.overdue?' (ATRASADA)':'')+'">'+
+            a+'<div class="t">'+fmtD(b.start)+' - '+b.type+pr+at+'</div><div class="n">'+warn+esc(short(b.name))+'</div>'+az+'</div>';
     }
     html+='</div>';
   }
   g.innerHTML=html;
   document.getElementById("recurring").innerHTML=recurringHTML(current, days[0]);
   const ov=document.getElementById("overflow");
-  if(sc.overflow.length===0){ ov.innerHTML='<div class="muted" style="font-size:11px">Tudo coube esta semana 🎉</div>'; }
-  else ov.innerHTML=sc.overflow.map(t=>'<div class="ovf"><span style="display:flex;gap:6px"><i class="dot" style="background:'+t.color+'"></i>'+(t.overdue?'<span class="warn">⚠</span> ':'')+(t.auto?'<span class="autotag">auto</span> ':'')+esc(short(t.name))+'</span><span class="muted">'+t.type+'</span></div>').join("");
+  if(sc.overflow.length===0){ ov.innerHTML='<div class="muted" style="font-size:11px">Tudo coube esta semana!</div>'; }
+  else ov.innerHTML=sc.overflow.map(function(t){return '<div class="ovf"><span style="display:flex;gap:6px"><i class="dot" style="background:'+t.color+'"></i>'+(t.overdue?'<span class="warn">atrasada</span> ':'')+(t.auto?'<span class="autotag">auto</span> ':'')+esc(short(t.name))+'</span><span class="muted">'+t.type+'</span></div>';}).join("");
   legendHTML();
 }
 function renderMonth(){
@@ -541,27 +542,27 @@ function renderMonth(){
   document.getElementById("monthlabel").textContent=MONFULL[m]+" "+y;
   const cs=personClients(person);
   const monthStart=new Date(y,m,1), monthEnd=new Date(y,m+1,0,23,59,59);
-  const realInMonth=real.filter(t=>t.due_date && +t.due_date>=+monthStart && +t.due_date<=+monthEnd);
-  const pavCs=(person==="iris"?allClients().filter(c=>c.pav && pavFires(c,m)):[]), rsCs=cs.filter(c=>c.rs);
+  const realInMonth=real.filter(function(t){return t.due_date && +t.due_date>=+monthStart && +t.due_date<=+monthEnd;});
+  const pavCs=(person==="iris"?allClients().filter(function(c){return c.pav && pavFires(c,m);}): []), rsCs=cs.filter(function(c){return c.rs;});
   const fb=firstBizOfMonth(y,m);
   const cron=new Date(y,m+1,1); cron.setDate(cron.getDate()-7);
   const mtLabel="4DAILY "+fmtD(7*60);
   function autoFor(d){
     const items=[];
-    if(isWeekday(d)) items.push({label:mtLabel+(d.getDay()===5?" · 4INNOVATION "+fmtD(13*60):""), color:"#7048e8", auto:false, title:"4DAILY 07:00 BR/11:00 PT (todos os dias úteis)"+(d.getDay()===5?" · 4INNOVATION 13:00 BR/17:00 PT (sextas)":"")});
+    if(isWeekday(d)) items.push({label:mtLabel+(d.getDay()===5?" - 4INNOVATION "+fmtD(13*60):""), color:"#7048e8", auto:false, title:"4DAILY 07:00 BR/11:00 PT"+(d.getDay()===5?" - 4INNOVATION 13:00 BR/17:00 PT":"")});
     if(d.getDay()===1) items.push({label:"Criativos 15/sem ("+cs.length+" proj.)", color:"#0ca678", auto:true, title:"15 criativos por semana em cada projeto"});
     if(sameDay(d,fb)){
-      if(pavCs.length) items.push({label:"PAV: "+pavCs.length+" clientes", color:"#f08c00", auto:true, title:"Scripts + gravações (1º dia útil): "+pavCs.map(c=>c.name+" "+c.pav.n+(c.pav.every>1?"/2m":"/mês")).join(", ")});
-      if(rsCs.length) items.push({label:"Reuniões alinh.: "+rsCs.length, color:"#c2255c", auto:true, title:"Reunião de alinhamento: "+rsCs.map(c=>c.name).join(", ")});
+      if(pavCs.length) items.push({label:"PAV: "+pavCs.length+" clientes", color:"#f08c00", auto:true, title:"Scripts + gravacoes (1o dia util): "+pavCs.map(function(c){return c.name+" "+c.pav.n+(c.pav.every>1?"/2m":"/mes");}).join(", ")});
+      if(rsCs.length) items.push({label:"Reunioes alinh.: "+rsCs.length, color:"#c2255c", auto:true, title:"Reuniao de alinhamento: "+rsCs.map(function(c){return c.name;}).join(", ")});
     }
-    if(sameDay(d,cron) && rsCs.length) items.push({label:"Cronogramas: "+rsCs.length, color:"#6741d9", auto:true, title:"Cronograma "+MONFULL[(m+1)%12]+" (entrega): "+rsCs.map(c=>c.name).join(", ")});
+    if(sameDay(d,cron) && rsCs.length) items.push({label:"Cronogramas: "+rsCs.length, color:"#6741d9", auto:true, title:"Cronograma "+(MONFULL[(m+1)%12])+" (entrega): "+rsCs.map(function(c){return c.name;}).join(", ")});
     return items;
   }
   const first=new Date(y,m,1); const startDow=(first.getDay()+6)%7;
   const gridStart=new Date(first); gridStart.setDate(1-startDow);
   const today=new Date();
   let html='';
-  for(const h of DOW7) html+='<div class="mhd">'+h+'</div>';
+  for(let hi=0;hi<DOW7.length;hi++) html+='<div class="mhd">'+DOW7[hi]+'</div>';
   for(let i=0;i<42;i++){
     const d=new Date(gridStart); d.setDate(gridStart.getDate()+i);
     const out=d.getMonth()!==m; const wend=d.getDay()===0||d.getDay()===6;
@@ -569,21 +570,22 @@ function renderMonth(){
     let cell='<div class="mcell'+(out?' out':'')+(wend?' wend':'')+(sameDay(d,today)?' today':'')+'"'+(out?'':' onclick="goWeek(\''+iso+'\')"')+'><div class="dn">'+d.getDate()+'</div>';
     let items=[];
     if(!out){
-      for(const t of real.filter(t=>t.due_date && sameDay(new Date(+t.due_date),d))){ const r=classify(t.name); items.push({label:short(t.name), color:r.color, auto:false, title:t.name}); }
+      const dayReal=real.filter(function(t){return t.due_date && sameDay(new Date(+t.due_date),d);});
+      for(let ri=0;ri<dayReal.length;ri++){ const t=dayReal[ri]; const r=classify(t.name); items.push({label:short(t.name), color:r.color, auto:false, title:t.name}); }
       items=items.concat(autoFor(d));
     }
     const show=items.slice(0,5);
-    for(const it of show) cell+='<div class="mi'+(it.auto?' auto':'')+'" style="background:'+it.color+'" title="'+esc(it.title)+'">'+esc(it.label)+'</div>';
+    for(let si=0;si<show.length;si++){ const it=show[si]; cell+='<div class="mi'+(it.auto?' auto':'')+'" style="background:'+it.color+'" title="'+esc(it.title)+'">'+esc(it.label)+'</div>'; }
     if(items.length>5) cell+='<div class="mmore">+'+(items.length-5)+' mais</div>';
     cell+='</div>';
     html+=cell;
   }
   document.getElementById("monthgrid").innerHTML='<div class="mgrid">'+html+'</div>';
-  let bn=chip(realInMonth.length,"tarefas c/ data no mês")+chip(cs.length,"projetos")+chip(rsCs.length,"c/ redes sociais");
-  if(pavCs.length){ const totPav=pavCs.reduce((s,c)=>s+c.pav.n,0); bn+=chip(pavCs.length,"projetos c/ PAV")+chip(totPav,"PAVs no mês (Iris faz todos)"); }
+  let bn=chip(realInMonth.length,"tarefas c/ data no mes")+chip(cs.length,"projetos")+chip(rsCs.length,"c/ redes sociais");
+  if(pavCs.length){ const totPav=pavCs.reduce(function(s,c){return s+c.pav.n;},0); bn+=chip(pavCs.length,"projetos c/ PAV")+chip(totPav,"PAVs no mes (Iris faz todos)"); }
   document.getElementById("banner").innerHTML=bn;
   document.getElementById("recurring").innerHTML=recurringHTML(person, monthStart);
-  document.getElementById("overflow").innerHTML='<div class="muted" style="font-size:11px">Clica num dia para abrir o planeamento dessa semana. Os PAVs (produção audiovisual) são todos da Iris. Os bimensais (Naiany e Rui, Cardeira e Costa) ocorrem em abril, jun, ago, out, dez, fev.</div>';
+  document.getElementById("overflow").innerHTML='<div class="muted" style="font-size:11px">Clica num dia para abrir o planeamento dessa semana.</div>';
   legendHTML();
 }
 function val(id){ return document.getElementById(id).value; }
@@ -592,26 +594,26 @@ function addProject(){
   const name=val("f_name").trim();
   if(!name){ document.getElementById("addmsg").textContent="Indica o nome do projeto."; return; }
   const pavn=parseInt(val("f_pav")||"0",10)||0;
-  CUSTOMRAW.push({p:val("f_person"), name, rs:chk("f_rs"), traffic:chk("f_traffic"), ia:chk("f_ia"), pav: pavn>0?{n:pavn,every:parseInt(val("f_every"),10)}:null});
+  CUSTOMRAW.push({p:val("f_person"), name:name, rs:chk("f_rs"), traffic:chk("f_traffic"), ia:chk("f_ia"), pav: pavn>0?{n:pavn,every:parseInt(val("f_every"),10)}:null});
   saveCustom(); rebuildCustom();
   document.getElementById("f_name").value=""; document.getElementById("f_pav").value="0";
   document.getElementById("f_rs").checked=false; document.getElementById("f_traffic").checked=false; document.getElementById("f_ia").checked=false;
-  document.getElementById("addmsg").textContent="Projeto \""+name+"\" adicionado ✓ (já entra no planeamento).";
+  document.getElementById("addmsg").textContent="Projeto \""+name+"\" adicionado (ja entra no planeamento).";
   renderCustomList();
 }
 function removeProject(i){ CUSTOMRAW.splice(i,1); saveCustom(); rebuildCustom(); renderCustomList(); }
 function renderCustomList(){
   const el=document.getElementById("customlist");
-  if(!CUSTOMRAW.length){ el.innerHTML='<div class="muted" style="font-size:11px">Ainda não adicionaste projetos.</div>'; return; }
-  el.innerHTML=CUSTOMRAW.map((o,i)=>{
-    const tags=[]; if(o.pav&&o.pav.n>0) tags.push(o.pav.n+" PAV"+(o.pav.every>1?"/2m":"/mês")); if(o.rs) tags.push("Redes sociais"); if(o.traffic) tags.push("Tráfego"); if(o.ia) tags.push("IA");
-    return '<div class="cust"><span><b>'+esc(o.name)+'</b> · '+(o.p==="iris"?"Iris":"Lucas")+' <span class="muted">'+(tags.length?tags.join(" · "):"só criativos")+'</span></span><button onclick="removeProject('+i+')">remover</button></div>';
+  if(!CUSTOMRAW.length){ el.innerHTML='<div class="muted" style="font-size:11px">Ainda nao adicionaste projetos.</div>'; return; }
+  el.innerHTML=CUSTOMRAW.map(function(o,i){
+    const tags=[]; if(o.pav&&o.pav.n>0) tags.push(o.pav.n+" PAV"+(o.pav.every>1?"/2m":"/mes")); if(o.rs) tags.push("Redes sociais"); if(o.traffic) tags.push("Trafego"); if(o.ia) tags.push("IA");
+    return '<div class="cust"><span><b>'+esc(o.name)+'</b> - '+(o.p==="iris"?"Iris":"Lucas")+' <span class="muted">'+(tags.length?tags.join(" - "):"so criativos")+'</span></span><button onclick="removeProject('+i+')">remover</button></div>';
   }).join("");
 }
-function renderAdd(){ /* form é estático; só a lista muda */ renderCustomList(); }
+function renderAdd(){ renderCustomList(); }
 function fromSnapshot(){
-  DATA.iris=SNAPSHOT.iris.map(r=>({name:r[0],status:r[1],due_date:r[2],priority:null,url:r[3]||null}));
-  DATA.lucas=SNAPSHOT.lucas.map(r=>({name:r[0],status:r[1],due_date:r[2],priority:null,url:r[3]||null}));
+  DATA.iris=SNAPSHOT.iris.map(function(r){return {name:r[0],status:r[1],due_date:r[2],priority:null,url:r[3]||null};});
+  DATA.lucas=SNAPSHOT.lucas.map(function(r){return {name:r[0],status:r[1],due_date:r[2],priority:null,url:r[3]||null};});
 }
 async function loadLive(){
   if(!(window.cowork&&window.cowork.callMcpTool)) return false;
@@ -619,14 +621,21 @@ async function loadLive(){
     for(const p of ["iris","lucas"]){
       const r=await window.cowork.callMcpTool(FILTER_TOOL,{assignees:[ASSIGNEES[p]],space_ids:[SPACE_ID],subtasks:true});
       const obj=r.structuredContent ?? JSON.parse(r.content[0].text);
-      const fetched=(obj.tasks||[]).map(t=>({name:t.name,status:t.status,due_date:t.due_date?+t.due_date:null,priority:t.priority,url:t.url}));
+      const fetched=(obj.tasks||[]).map(function(t){return {name:t.name,status:t.status,due_date:t.due_date?+t.due_date:null,priority:t.priority,url:t.url};});
       if(fetched.length>0) DATA[p]=fetched;
     }
     return true;
   }catch(e){ console.error(e); return false; }
 }
 (async function init(){
-  try{
-    loadCustom(); fromSnapshot();
-    try{ render(); }catch(re){
-      document.getElementById("src").textContent="❌ RENDER ERR: "+
+  loadCustom(); fromSnapshot(); render();
+  document.getElementById("src").textContent="Snapshot de 11 jun 2026 - a tentar dados em direto do ClickUp...";
+  const ok=await loadLive();
+  document.getElementById("src").textContent= ok
+    ? "Dados em direto do ClickUp - atualizado "+new Date().toLocaleString("pt-PT")
+    : "Snapshot de 11 jun 2026 (sem ligacao em direto ao ClickUp neste contexto)";
+  render();
+})();
+</script>
+</body>
+</html>
