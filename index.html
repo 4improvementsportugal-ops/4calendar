@@ -637,8 +637,10 @@ async function loadLive(){
       ? "● Dados em direto do ClickUp · atualizado "+new Date().toLocaleString("pt-PT")
       : "○ Snapshot de 12 jun 2026 (sem ligação em direto ao ClickUp neste contexto)";
     try{ render(); }catch(re2){
-      document.getElementById("src").textContent="❌ INIT ERR: "+e.message+" @ "+(e.stack||"").split("
-")[1];
+      document.getElementById("src").textContent="❌ RENDER2 ERR: "+re2.message+" @ "+re2.stack.split("\n")[1];
+    }
+  }catch(e){
+    document.getElementById("src").textContent="❌ INIT ERR: "+e.message+" @ "+(e.stack||"").split("\n")[1];
   }
 })();
 </script>
