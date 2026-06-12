@@ -354,7 +354,6 @@ function autoTasks(person, real, days, rawAll){
   const endW=new Date(days[4].getFullYear(),days[4].getMonth(),days[4].getDate(),23,59,59);
   const inWeek=dt=>dt>=days[0]&&dt<=endW;
   const wStart=+days[0], wEnd=+endW; rawAll=rawAll||[];
-  // Existe tarefa para este cliente+tipo? Conta: (a) tarefas ativas já mostradas nesta semana; (b) QUALQUER tarefa (mesmo em estado excluído) com data nesta semana. Assim 1 tarefa no ClickUp cancela a auto nessa semana, e na próxima semana a auto regenera.
   function exists(rx,c){ return real.some(t=>rx.test(t.name)&&matchClient(t.name,c)) || rawAll.some(t=>rx.test(t.name)&&matchClient(t.name,c)&&t.due_date&&+t.due_date>=wStart&&+t.due_date<=wEnd); }
   const out=[]; const cs=personClients(person);
   for(const c of cs){
@@ -466,7 +465,6 @@ function renderWeek(){
   const wStart=+days[0], wEnd=+new Date(days[4].getFullYear(),days[4].getMonth(),days[4].getDate(),23,59,59);
   const isCur=sameWeek(weekCursor,new Date());
   const allReal=(DATA[current]||[]).filter(isActive);
-  // Backlog: tarefas atrasadas dos últimos 2 meses + sem data -> a fazer a partir de 15 jun 2026
   const t0b=new Date(); t0b.setHours(0,0,0,0);
   const twoMo=new Date(); twoMo.setMonth(twoMo.getMonth()-2); twoMo.setHours(0,0,0,0);
   const backlogWeek0=weekDaysOf(new Date(2026,5,15))[0];
@@ -604,7 +602,7 @@ function renderCustomList(){
     return '<div class="cust"><span><b>'+esc(o.name)+'</b> · '+(o.p==="iris"?"Iris":"Lucas")+' <span class="muted">'+(tags.length?tags.join(" · "):"só criativos")+'</span></span><button onclick="removeProject('+i+')">remover</button></div>';
   }).join("");
 }
-function renderAdd(){ /* form é estático; só a lista muda */ renderCustomList(); }
+function renderAdd(){ renderCustomList(); }
 function fromSnapshot(){
   DATA.iris=SNAPSHOT.iris.map(r=>({name:r[0],status:r[1],due_date:r[2],priority:null,url:r[3]||null}));
   DATA.lucas=SNAPSHOT.lucas.map(r=>({name:r[0],status:r[1],due_date:r[2],priority:null,url:r[3]||null}));
