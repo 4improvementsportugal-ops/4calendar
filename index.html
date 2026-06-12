@@ -231,6 +231,7 @@ function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 function loadCustom(){ const s=lsGet("4cal_custom"); if(s){ try{ CUSTOMRAW=JSON.parse(s)||[]; }catch(e){ CUSTOMRAW=[]; } } rebuildCustom(); }
 function saveCustom(){ lsSet("4cal_custom", JSON.stringify(CUSTOMRAW)); }
 const CRIATIVOS_SEMANA=15, MIN_POR_CRIATIVO=4;
+const CAL_START=new Date(2026,5,15); // dinamização a partir de 15 jun 2026
 const SNAPSHOT={
  iris:[
   ["[CASABELA] Agendar PAV's","backlog",1782788400000,"https://app.clickup.com/t/86ahu2r02"],
@@ -351,9 +352,11 @@ function buildSchedule(tasks, days){
   return {days,placed,overflow,total:items.length};
 }
 function autoTasks(person, real, days, rawAll){
+  if(+days[0]<+CAL_START) return []; // sem tarefas auto antes de 15 jun 2026
   const endW=new Date(days[4].getFullYear(),days[4].getMonth(),days[4].getDate(),23,59,59);
   const inWeek=dt=>dt>=days[0]&&dt<=endW;
   const wStart=+days[0], wEnd=+endW; rawAll=rawAll||[];
+  // Existe tarefa para este cliente+tipo? Conta: (a) tarefas ativas já mostradas nesta semana; (b) QUALQUER tarefa (mesmo em estado excluído) com data nesta semana. Assim 1 tarefa no ClickUp cancela a auto nessa semana, e na próxima semana a auto regenera.
   function exists(rx,c){ return real.some(t=>rx.test(t.name)&&matchClient(t.name,c)) || rawAll.some(t=>rx.test(t.name)&&matchClient(t.name,c)&&t.due_date&&+t.due_date>=wStart&&+t.due_date<=wEnd); }
   const out=[]; const cs=personClients(person);
   for(const c of cs){
@@ -465,6 +468,7 @@ function renderWeek(){
   const wStart=+days[0], wEnd=+new Date(days[4].getFullYear(),days[4].getMonth(),days[4].getDate(),23,59,59);
   const isCur=sameWeek(weekCursor,new Date());
   const allReal=(DATA[current]||[]).filter(isActive);
+  // Backlog: tarefas atrasadas dos últimos 2 meses + sem data -> a fazer a partir de 15 jun 2026
   const t0b=new Date(); t0b.setHours(0,0,0,0);
   const twoMo=new Date(); twoMo.setMonth(twoMo.getMonth()-2); twoMo.setHours(0,0,0,0);
   const backlogWeek0=weekDaysOf(new Date(2026,5,15))[0];
@@ -543,6 +547,7 @@ function renderMonth(){
   function autoFor(d){
     const items=[];
     if(isWeekday(d)) items.push({label:mtLabel+(d.getDay()===5?" · 4INNOVATION "+fmtD(13*60):""), color:"#7048e8", auto:false, title:"4DAILY 07:00 BR/11:00 PT (todos os dias úteis)"+(d.getDay()===5?" · 4INNOVATION 13:00 BR/17:00 PT (sextas)":"")});
+    if(+d<+CAL_START) return items; // antes de 15 jun 2026: só reuniões de equipa
     if(d.getDay()===1) items.push({label:"Criativos 15/sem ("+cs.length+" proj.)", color:"#0ca678", auto:true, title:"15 criativos por semana em cada projeto"});
     if(sameDay(d,fb)){
       if(pavCs.length) items.push({label:"PAV: "+pavCs.length+" clientes", color:"#f08c00", auto:true, title:"Scripts + gravações (1º dia útil): "+pavCs.map(c=>c.name+" "+c.pav.n+(c.pav.every>1?"/2m":"/mês")).join(", ")});
@@ -602,7 +607,7 @@ function renderCustomList(){
     return '<div class="cust"><span><b>'+esc(o.name)+'</b> · '+(o.p==="iris"?"Iris":"Lucas")+' <span class="muted">'+(tags.length?tags.join(" · "):"só criativos")+'</span></span><button onclick="removeProject('+i+')">remover</button></div>';
   }).join("");
 }
-function renderAdd(){ renderCustomList(); }
+function renderAdd(){ /* form é estático; só a lista muda */ renderCustomList(); }
 function fromSnapshot(){
   DATA.iris=SNAPSHOT.iris.map(r=>({name:r[0],status:r[1],due_date:r[2],priority:null,url:r[3]||null}));
   DATA.lucas=SNAPSHOT.lucas.map(r=>({name:r[0],status:r[1],due_date:r[2],priority:null,url:r[3]||null}));
@@ -632,10 +637,8 @@ async function loadLive(){
       ? "● Dados em direto do ClickUp · atualizado "+new Date().toLocaleString("pt-PT")
       : "○ Snapshot de 12 jun 2026 (sem ligação em direto ao ClickUp neste contexto)";
     try{ render(); }catch(re2){
-      document.getElementById("src").textContent="❌ RENDER2 ERR: "+re2.message+" @ "+re2.stack.split("\n")[1];
-    }
-  }catch(e){
-    document.getElementById("src").textContent="❌ INIT ERR: "+e.message+" @ "+(e.stack||"").split("\n")[1];
+      document.getElementById("src").textContent="❌ INIT ERR: "+e.message+" @ "+(e.stack||"").split("
+")[1];
   }
 })();
 </script>
