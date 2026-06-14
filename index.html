@@ -341,9 +341,26 @@ function buildSchedule(tasks, days){
   const reserved=days.map(d=>reservedForDay(d));
   const cursor=days.map(()=>WORK_START);
   const placed=[]; const overflow=[];
+  // ordem de tentativa de dias: equilíbrio de carga + respeito pelos prazos de entrega
+  function tryOrder(it){
+    // bloco ancorado a um dia fixo (ex.: criativos diários): tenta esse dia, depois o menos carregado
+    if(typeof it.fixedDay==="number"){
+      const rest=days.map((_,d)=>d).filter(d=>d!==it.fixedDay).sort((a,b)=>cursor[a]-cursor[b]);
+      return [it.fixedDay].concat(rest);
+    }
+    // tarefa com prazo nesta semana: ancora ao dia do prazo; se cheio, recua para cumprir a entrega
+    if(it.due_date!=null){
+      const due=new Date(+it.due_date);
+      for(let d=0; d<days.length; d++) if(sameDay(due,days[d])){
+        const o=[d]; for(let k=d-1;k>=0;k--) o.push(k); for(let k=d+1;k<days.length;k++) o.push(k); return o;
+      }
+    }
+    // sem prazo nesta semana (auto/backlog/atrasos): dia menos carregado primeiro
+    return days.map((_,d)=>d).sort((a,b)=>cursor[a]-cursor[b]);
+  }
   for(const it of items){
     let done=false;
-    for(let d=0; d<days.length; d++){
+    for(const d of tryOrder(it)){
       const s=nextFree(cursor[d], it.dur, reserved[d]);
       if(s!==null){ placed.push({...it, day:d, start:s, end:s+it.dur}); cursor[d]=s+it.dur; done=true; break; }
     }
@@ -360,8 +377,12 @@ function autoTasks(person, real, days, rawAll){
   function exists(rx,c){ return real.some(t=>rx.test(t.name)&&matchClient(t.name,c)) || rawAll.some(t=>rx.test(t.name)&&matchClient(t.name,c)&&t.due_date&&+t.due_date>=wStart&&+t.due_date<=wEnd); }
   const out=[]; const cs=personClients(person);
   for(const c of cs){
-    if(!exists(/criativ/i,c))
-      out.push({name:"Criativos ("+CRIATIVOS_SEMANA+") — "+c.name, type:"Criativos", dur:CRIATIVOS_SEMANA*MIN_POR_CRIATIVO, color:"#0ca678", client:c.name, priority:"normal", due_date:null, auto:true});
+    if(!exists(/criativ/i,c)){
+      // 15 criativos/semana divididos por dia útil (~3/dia) para cada cliente ter trabalho todos os dias
+      const per=Math.floor(CRIATIVOS_SEMANA/5), rem=CRIATIVOS_SEMANA%5;
+      for(let i=0;i<5;i++){ const n=per+(i<rem?1:0); if(n<=0) continue;
+        out.push({name:"Criativos ("+n+") — "+c.name, type:"Criativos", dur:n*MIN_POR_CRIATIVO, color:"#0ca678", client:c.name, priority:"normal", due_date:null, auto:true, fixedDay:i}); }
+    }
   }
   const nextMonth=new Date(days[0].getFullYear(), days[0].getMonth()+1, 1);
   const cronDate=new Date(nextMonth); cronDate.setDate(cronDate.getDate()-7);
@@ -548,7 +569,7 @@ function renderMonth(){
     const items=[];
     if(isWeekday(d)) items.push({label:mtLabel+(d.getDay()===5?" · 4INNOVATION "+fmtD(13*60):""), color:"#7048e8", auto:false, title:"4DAILY 07:00 BR/11:00 PT (todos os dias úteis)"+(d.getDay()===5?" · 4INNOVATION 13:00 BR/17:00 PT (sextas)":"")});
     if(+d<+CAL_START) return items; // antes de 15 jun 2026: só reuniões de equipa
-    if(d.getDay()===1) items.push({label:"Criativos 15/sem ("+cs.length+" proj.)", color:"#0ca678", auto:true, title:"15 criativos por semana em cada projeto"});
+    if(isWeekday(d)) items.push({label:"Criativos ~3/dia ("+cs.length+" proj.)", color:"#0ca678", auto:true, title:"15 criativos/semana por projeto, distribuídos ~3 por dia útil"});
     if(sameDay(d,fb)){
       if(pavCs.length) items.push({label:"PAV: "+pavCs.length+" clientes", color:"#f08c00", auto:true, title:"Scripts + gravações (1º dia útil): "+pavCs.map(c=>c.name+" "+c.pav.n+(c.pav.every>1?"/2m":"/mês")).join(", ")});
       if(rsCs.length) items.push({label:"Reuniões alinh.: "+rsCs.length, color:"#c2255c", auto:true, title:"Reunião de alinhamento: "+rsCs.map(c=>c.name).join(", ")});
