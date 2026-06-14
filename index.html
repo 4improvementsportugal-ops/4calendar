@@ -230,7 +230,7 @@ function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; 
 function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 function loadCustom(){ const s=lsGet("4cal_custom"); if(s){ try{ CUSTOMRAW=JSON.parse(s)||[]; }catch(e){ CUSTOMRAW=[]; } } rebuildCustom(); }
 function saveCustom(){ lsSet("4cal_custom", JSON.stringify(CUSTOMRAW)); }
-const CRIATIVOS_SEMANA=15, MIN_POR_CRIATIVO=4;
+const CRIATIVOS_SEMANA=15, MIN_POR_CRIATIVO=4, MIN_POR_LEVA=90;
 const CAL_START=new Date(2026,5,15); // dinamização a partir de 15 jun 2026
 const SNAPSHOT={
  iris:[
@@ -377,12 +377,9 @@ function autoTasks(person, real, days, rawAll){
   function exists(rx,c){ return real.some(t=>rx.test(t.name)&&matchClient(t.name,c)) || rawAll.some(t=>rx.test(t.name)&&matchClient(t.name,c)&&t.due_date&&+t.due_date>=wStart&&+t.due_date<=wEnd); }
   const out=[]; const cs=personClients(person);
   for(const c of cs){
-    if(!exists(/criativ/i,c)){
-      // 15 criativos/semana divididos por dia útil (~3/dia) para cada cliente ter trabalho todos os dias
-      const per=Math.floor(CRIATIVOS_SEMANA/5), rem=CRIATIVOS_SEMANA%5;
-      for(let i=0;i<5;i++){ const n=per+(i<rem?1:0); if(n<=0) continue;
-        out.push({name:"Criativos ("+n+") — "+c.name, type:"Criativos", dur:n*MIN_POR_CRIATIVO, color:"#0ca678", client:c.name, priority:"normal", due_date:null, auto:true, fixedDay:i}); }
-    }
+    if(!exists(/criativ/i,c))
+      // 1 leva de criativos por semana por cliente = 1h30; sem dia fixo -> distribuída pelo dia menos carregado
+      out.push({name:"Criativos ("+CRIATIVOS_SEMANA+") — "+c.name, type:"Criativos", dur:MIN_POR_LEVA, color:"#0ca678", client:c.name, priority:"normal", due_date:null, auto:true});
   }
   const nextMonth=new Date(days[0].getFullYear(), days[0].getMonth()+1, 1);
   const cronDate=new Date(nextMonth); cronDate.setDate(cronDate.getDate()-7);
@@ -569,7 +566,7 @@ function renderMonth(){
     const items=[];
     if(isWeekday(d)) items.push({label:mtLabel+(d.getDay()===5?" · 4INNOVATION "+fmtD(13*60):""), color:"#7048e8", auto:false, title:"4DAILY 07:00 BR/11:00 PT (todos os dias úteis)"+(d.getDay()===5?" · 4INNOVATION 13:00 BR/17:00 PT (sextas)":"")});
     if(+d<+CAL_START) return items; // antes de 15 jun 2026: só reuniões de equipa
-    if(isWeekday(d)) items.push({label:"Criativos ~3/dia ("+cs.length+" proj.)", color:"#0ca678", auto:true, title:"15 criativos/semana por projeto, distribuídos ~3 por dia útil"});
+    if(d.getDay()===1) items.push({label:"Criativos: "+cs.length+" projetos · 1 leva 1h30/sem", color:"#0ca678", auto:true, title:"1 leva de criativos por semana por projeto (1h30), distribuída pelos dias na vista semanal"});
     if(sameDay(d,fb)){
       if(pavCs.length) items.push({label:"PAV: "+pavCs.length+" clientes", color:"#f08c00", auto:true, title:"Scripts + gravações (1º dia útil): "+pavCs.map(c=>c.name+" "+c.pav.n+(c.pav.every>1?"/2m":"/mês")).join(", ")});
       if(rsCs.length) items.push({label:"Reuniões alinh.: "+rsCs.length, color:"#c2255c", auto:true, title:"Reunião de alinhamento: "+rsCs.map(c=>c.name).join(", ")});
