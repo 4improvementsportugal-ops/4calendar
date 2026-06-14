@@ -231,6 +231,7 @@ function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 function loadCustom(){ const s=lsGet("4cal_custom"); if(s){ try{ CUSTOMRAW=JSON.parse(s)||[]; }catch(e){ CUSTOMRAW=[]; } } rebuildCustom(); }
 function saveCustom(){ lsSet("4cal_custom", JSON.stringify(CUSTOMRAW)); }
 const CRIATIVOS_SEMANA=15, MIN_POR_CRIATIVO=4, MIN_POR_LEVA=90;
+const BACKLOG_PER_WEEK=6; // nº de tarefas de backlog antigo agendadas por semana (espalhado para aliviar os dias)
 const CAL_START=new Date(2026,5,15); // dinamização a partir de 15 jun 2026
 const SNAPSHOT={
  iris:[
@@ -486,21 +487,23 @@ function renderWeek(){
   const wStart=+days[0], wEnd=+new Date(days[4].getFullYear(),days[4].getMonth(),days[4].getDate(),23,59,59);
   const isCur=sameWeek(weekCursor,new Date());
   const allReal=(DATA[current]||[]).filter(isActive);
-  // Backlog: tarefas atrasadas dos últimos 2 meses + sem data -> a fazer a partir de 15 jun 2026
+  // Backlog: atrasadas dos últimos 2 meses + sem data -> espalhadas por várias semanas (BACKLOG_PER_WEEK/semana) a partir de 15 jun 2026
   const t0b=new Date(); t0b.setHours(0,0,0,0);
   const twoMo=new Date(); twoMo.setMonth(twoMo.getMonth()-2); twoMo.setHours(0,0,0,0);
-  const backlogWeek0=weekDaysOf(new Date(2026,5,15))[0];
-  const isBacklogWeek=sameDay(days[0],backlogWeek0);
+  const backlogWeek0=weekDaysOf(CAL_START)[0];
+  const weekIdx=Math.round((+days[0]-+backlogWeek0)/6048e5); // 6048e5 ms = 7 dias; índice da semana desde 15 jun
   let realTasks=allReal.filter(t=>t.due_date && +t.due_date>=wStart && +t.due_date<=wEnd);
-  if(isBacklogWeek) realTasks=realTasks.concat(allReal.filter(t=>{
-    if(t.due_date && +t.due_date>=wStart && +t.due_date<=wEnd) return false;
-    if(!t.due_date) return true;
-    const dd=+t.due_date; return dd<+t0b && dd>=+twoMo;
-  }));
+  let nBacklog=0;
+  if(weekIdx>=0){
+    const backlog=allReal.filter(t=>{ if(!t.due_date) return true; const dd=+t.due_date; return dd<+t0b && dd>=+twoMo; });
+    backlog.sort((a,b)=>{ const da=a.due_date?+a.due_date:Infinity, db=b.due_date?+b.due_date:Infinity; if(da!==db) return da-db; return a.name<b.name?-1:a.name>b.name?1:0; });
+    const slice=backlog.filter((_,i)=>Math.floor(i/BACKLOG_PER_WEEK)===weekIdx);
+    nBacklog=slice.length; realTasks=realTasks.concat(slice);
+  }
   const tasks=realTasks.concat(autoTasks(current, realTasks, days, (DATA[current]||[])));
   const sc=buildSchedule(tasks, days);
   document.getElementById("weeklabel").textContent=days[0].getDate()+" "+MON[days[0].getMonth()]+" – "+days[4].getDate()+" "+MON[days[4].getMonth()]+" "+days[4].getFullYear();
-  document.getElementById("weekinfo").textContent="horário "+(tz==="br"?"Brasil":"Portugal")+(isCur?" · semana atual":"")+(isBacklogWeek?" · inclui backlog (atrasos últimos 2 meses)":"");
+  document.getElementById("weekinfo").textContent="horário "+(tz==="br"?"Brasil":"Portugal")+(isCur?" · semana atual":"")+(nBacklog>0?" · inclui "+nBacklog+" do backlog (espalhado por semanas)":"");
   const nAuto=tasks.filter(t=>t.auto).length;
   const nOv=sc.placed.filter(x=>x.overdue).length+sc.overflow.filter(x=>x.overdue).length;
   document.getElementById("banner").innerHTML=
