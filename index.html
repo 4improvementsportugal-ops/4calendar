@@ -172,6 +172,12 @@ function reservedForDay(date){
   if(date.getDay()===5) r.push([13*60,13*60+60]);
   return r.sort((a,b)=>a[0]-b[0]);
 }
+function freeIntervalsForDay(date){ // regiões livres (manhã/tarde) entre os blocos reservados
+  const res=reservedForDay(date); const free=[]; let cur=WORK_START;
+  for(const iv of res){ if(iv[0]>cur) free.push([cur,iv[0]]); cur=Math.max(cur,iv[1]); }
+  if(cur<WORK_END) free.push([cur,WORK_END]);
+  return free;
+}
 const EXCLUDED=["ajustes cliente","entrega ajustes","aprovado","publicado"];
 function isActive(t){ return !EXCLUDED.includes((t.status||"").toLowerCase().trim()); }
 const RULES=[
@@ -367,7 +373,28 @@ function buildSchedule(tasks, days){
     }
     if(!done) overflow.push(it);
   }
+  spreadWithinDays(placed, days);
   return {days,placed,overflow,total:items.length};
+}
+// Reposiciona os blocos de cada dia pelos intervalos livres (manhã e tarde) com espaçamento, em vez de os colar todos ao topo
+function spreadWithinDays(placed, days){
+  for(let d=0; d<days.length; d++){
+    const blocks=placed.filter(b=>b.day===d).sort((a,b)=>a.start-b.start);
+    if(!blocks.length) continue;
+    const free=freeIntervalsForDay(days[d]).map(iv=>({s:iv[0],e:iv[1],cap:iv[1]-iv[0],used:0,items:[]}));
+    const totalCap=free.reduce((s,iv)=>s+iv.cap,0);
+    const totalDur=blocks.reduce((s,b)=>s+b.dur,0);
+    if(totalDur>=totalCap) continue; // dia cheio: mantém o empacotamento de cima para baixo
+    // reparte manhã/tarde: cada bloco vai para o intervalo com menor ocupação relativa onde caiba (equilibra os dois)
+    for(const b of blocks){
+      let best=null;
+      for(const iv of free){ if(iv.used+b.dur<=iv.cap){ const r=iv.used/iv.cap; if(best===null||r<best.r) best={iv,r}; } }
+      if(!best) best={iv:free.reduce((a,c)=>(c.cap-c.used)>(a.cap-a.used)?c:a)};
+      best.iv.items.push(b); best.iv.used+=b.dur;
+    }
+    // espaça uniformemente dentro de cada intervalo (respiro antes, entre e depois das tarefas)
+    for(const iv of free){ const n=iv.items.length; if(!n) continue; const gap=(iv.cap-iv.used)/(n+1); let pos=iv.s+gap; for(const b of iv.items){ b.start=Math.round(pos); b.end=b.start+b.dur; pos=b.end+gap; } }
+  }
 }
 function autoTasks(person, real, days, rawAll){
   if(+days[0]<+CAL_START) return []; // sem tarefas auto antes de 15 jun 2026
