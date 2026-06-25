@@ -178,7 +178,7 @@ function freeIntervalsForDay(date){ // regiões livres (manhã/tarde) entre os b
   if(cur<WORK_END) free.push([cur,WORK_END]);
   return free;
 }
-const EXCLUDED=["ajustes cliente","entrega ajustes","aprovado","publicado"];
+const EXCLUDED=["ajustes cliente","ajuste cliente","entrega ajustes","entrega cliente","pronto para aprovação","aprovado","publicado"];
 function isActive(t){ return !EXCLUDED.includes((t.status||"").toLowerCase().trim()); }
 const RULES=[
   {k:/cronograma/i, type:"Cronograma", dur:120, color:"#6741d9"},
