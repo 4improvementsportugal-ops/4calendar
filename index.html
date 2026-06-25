@@ -428,7 +428,7 @@ function recurringHTML(person, refDate){
   rec+=recCard("Cronogramas "+MON[next.getMonth()]+" — entrega "+dstr(cron),"1 sem. antes de "+dstr(next)+" · "+(rsList.length?rsList.join(", "):"—"));
   if(pavList.length) rec+=recCard("Scripts + agendar gravações — "+dstr(fb),"1º dia útil do mês · "+pavList.map(c=>c.name+" ("+c.pav.n+(c.pav.every>1?" cada 2m":"/mes")+")").join(", "));
   rec+=recCard("Reuniões de alinhamento (mensal)","1 por cliente c/ redes sociais: "+(rsList.length?rsList.join(", "):"—"));
-  rec+=recCard("Criativos","15/semana por projeto (60 min) — todos os clientes");
+  rec+=recCard("Criativos","15/semana por projeto = 1 leva de 1h30 — todos os clientes");
   rec+=recCard("Landing pages","On-demand — só quando o cliente pede");
   return rec;
 }
@@ -666,11 +666,11 @@ async function loadLive(){
       document.getElementById("src").textContent="❌ RENDER ERR: "+re.message+" @ "+re.stack.split("\n")[1];
       return;
     }
-    document.getElementById("src").textContent="Snapshot de 25 jun 2026 — a tentar dados em direto do ClickUp…";
+    document.getElementById("src").textContent="Snapshot de 12 jun 2026 — a tentar dados em direto do ClickUp…";
     const ok=await loadLive();
     document.getElementById("src").textContent= ok
       ? "● Dados em direto do ClickUp · atualizado "+new Date().toLocaleString("pt-PT")
-      : "○ Snapshot de 25 jun 2026 (sem ligação em direto ao ClickUp neste contexto)";
+      : "○ Snapshot de 12 jun 2026 (sem ligação em direto ao ClickUp neste contexto)";
     try{ render(); }catch(re2){
       document.getElementById("src").textContent="❌ RENDER2 ERR: "+re2.message+" @ "+re2.stack.split("\n")[1];
     }
