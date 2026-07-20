@@ -210,7 +210,6 @@ const BASE_CLIENTS=[
  {p:"iris", name:"Ofício Carpintaria", m:[/OF[ÍI]CIO/i], rs:true, pav:null},
  {p:"iris", name:"TERRAE", m:[/TERRAE/i], rs:false, pav:null},
  {p:"iris", name:"Feel Your Home", m:[/FEEL\s*YOUR\s*HOME/i], rs:true, pav:{n:3,every:1}},
- {p:"iris", name:"4Improvements (interno)", m:[/4IMPROVEMENTS.*INTERNO/i], rs:false, pav:null},
  {p:"lucas", name:"Pedro Bernardes", m:[/PEDRO\s*BERNARDES/i], rs:false, pav:null},
  {p:"lucas", name:"DS Private", m:[/DS\s*PRIVATE/i], rs:false, pav:null},
  {p:"lucas", name:"Jorge Pimentel", m:[/JORGE/i], rs:false, pav:null},
@@ -243,12 +242,13 @@ const BACKLOG_PER_WEEK=6; // nº de tarefas de backlog antigo agendadas por sema
 const CAL_START=new Date(2026,5,15); // dinamização a partir de 15 jun 2026
 const SNAPSHOT={
  iris:[
- ["[ANDRÉ ROSA] Criativos Julho","pronto para aprovação",1784185200000,"https://app.clickup.com/t/86ajjz3cf"],
+ ["[NR EQUIPA] Novos Criativos","em produção",1784516400000,"https://app.clickup.com/t/86ajkjgzd"],
+ ["[ANDRÉ ROSA] Criativos Julho","entrega cliente",1784185200000,"https://app.clickup.com/t/86ajjz3cf"],
  ["[OFÍCIO CARPINTARIA] Cronograma de Redes Sociais","backlog",1784257200000,"https://app.clickup.com/t/86ajjyhma"],
  ["[CSA] Cronograma de Redes Sociais","backlog",1784257200000,"https://app.clickup.com/t/86ajjyhm9"],
  ["[ADILSON] Cronograma de Redes Sociais","backlog",1784257200000,"https://app.clickup.com/t/86ajjyhm6"],
  ["[FEEL YOUR HOME] Cronograma de Redes Sociais","backlog",1784257200000,"https://app.clickup.com/t/86ajjyhm7"],
- ["[JH NEVES] Cronograma de Redes Sociais","backlog",1784257200000,"https://app.clickup.com/t/86ajjyhm5"],
+ ["[JH NEVES] Cronograma de Redes Sociais","entrega cliente",1784257200000,"https://app.clickup.com/t/86ajjyhm5"],
  ["[G4 REMAX] Cronograma de Redes Sociais","backlog",1784257200000,"https://app.clickup.com/t/86ajjyhm4"],
  ["[PRACTIC POOL] Cronograma de Redes Sociais","backlog",1784257200000,"https://app.clickup.com/t/86ajjyhm3"],
  ["[JOÃO DIAS] Criativos Cronograma Agosto","pronto para aprovação",null,"https://app.clickup.com/t/86ajh6ggg"],
@@ -265,9 +265,8 @@ const SNAPSHOT={
  ["[OFÍCIO CARPINTARIA] Cronograma Julho/Agosto","backlog",1784084400000,"https://app.clickup.com/t/86ajgcz64"],
  ["[FEEL YOUR HOME] Cronograma Julho/Agosto","backlog",1784084400000,"https://app.clickup.com/t/86ajgcz5v"],
  ["[FEEL YOUR HOME] Novos Criativos - Imóveis","backlog",1783998000000,"https://app.clickup.com/t/86ajgcqcw"],
- ["[VITOR RODRIGUES] Campanha Viagem Medieval - vídeo","backlog",1783911600000,"https://app.clickup.com/t/86ajeek83"],
- ["[CSA] Script PAV - 22 de Julho","pronto para aprovação",null,"https://app.clickup.com/t/86ajeb601"],
- ["[EQUIPA SOARES] Scrip PAV - 21/07","pronto para aprovação",1784170800000,"https://app.clickup.com/t/86ajeb5kg"],
+ ["[CSA] Script PAV - 22 de Julho","entrega cliente",null,"https://app.clickup.com/t/86ajeb601"],
+ ["[EQUIPA SOARES] Scrip PAV - 21/07","entrega cliente",1784170800000,"https://app.clickup.com/t/86ajeb5kg"],
  ["[AP] Novos Criativos - 2ª Fase Diamante","aguardando informação",1783911600000,"https://app.clickup.com/t/86ajdvt07"],
  ["[OFÍCIO CARPINTARIA] Novos Criativos","aguardando informação",1783652400000,"https://app.clickup.com/t/86ajdnuc6"],
  ["[GONÇALO VIEIRA] REVISÃO - Criativos","backlog",1784257200000,"https://app.clickup.com/t/86ajda5ma"],
@@ -280,7 +279,7 @@ const SNAPSHOT={
  ["[AP imobiliária] Cronograma Julho","aprovado",1783479600000,"https://app.clickup.com/t/86ajbc7uz"],
  ["[PRÓPRIO T] Vídeos com IA","ajustes cliente",1783062000000,"https://app.clickup.com/t/86ajawfb4"],
  ["[AP] Novos Criativos","aguardando informação",1783062000000,"https://app.clickup.com/t/86ajaw761"],
- ["[ANDRÉ ROSA] Cronograma Julho","pronto para aprovação",1783479600000,"https://app.clickup.com/t/86aj9hzyp"],
+ ["[ANDRÉ ROSA] Cronograma Julho","aprovado",1783479600000,"https://app.clickup.com/t/86aj9hzyp"],
  ["[TODOS] Entregar cronogramas Julho","em produção",1782788400000,"https://app.clickup.com/t/86aj9cztd"],
  ["[TODOS] Marcar PAVs Julho","em produção",1782788400000,"https://app.clickup.com/t/86aj9czhb"],
  ["[FEEL YOUR HOME] Novos Criativos","aguardando informação",1783652400000,"https://app.clickup.com/t/86aj91xa3"],
@@ -297,14 +296,14 @@ const SNAPSHOT={
  ["[ANNA] Novos Criativos","backlog",1776841200000,"https://app.clickup.com/t/86agyf3vm"]
  ],
  lucas:[
- ["[EQUIPA SOARES] Novos Criativos","em produção",1784257200000,"https://app.clickup.com/t/86ajh3zcw"],
- ["[C21 CARDEIRA E COSTA] Novos Criativos","backlog",1784170800000,"https://app.clickup.com/t/86ajgdj0e"],
+ ["[EQUIPA SOARES] Novos Criativos","pronto para aprovação",1784257200000,"https://app.clickup.com/t/86ajh3zcw"],
+ ["[C21 CARDEIRA E COSTA] Novos Criativos","em produção",1784170800000,"https://app.clickup.com/t/86ajgdj0e"],
  ["[JOÃO E HELENA] Novos Criativos","em produção",1784170800000,"https://app.clickup.com/t/86ajgdj0d"],
  ["[JORGE] Novos Criativos","aguardando informação",1784170800000,"https://app.clickup.com/t/86ajgdj06"],
  ["[GONÇALO VIEIRA] Novos Criativos","backlog",1784170800000,"https://app.clickup.com/t/86ajgdj07"],
  ["[SOARES] Novos Criativos","backlog",1784170800000,"https://app.clickup.com/t/86ajgdj02"],
  ["[ADILSON] Novos Criativos","backlog",1784170800000,"https://app.clickup.com/t/86ajgdhzx"],
- ["[VITOR PEREIRA] Novos Criativos","backlog",1784170800000,"https://app.clickup.com/t/86ajgdhzw"],
+ ["[VITOR PEREIRA] Novos Criativos","em produção",1784170800000,"https://app.clickup.com/t/86ajgdhzw"],
  ["[HALLSTAR] Novos Criativos","ajustes cliente",1783479600000,"https://app.clickup.com/t/86ajda5mc"],
  ["[JORGE] Novos Criativos","aguardando informação",1783566000000,"https://app.clickup.com/t/86ajda5m1"],
  ["[VITOR PEREIRA] Novos Criativos","aguardando informação",1783652400000,"https://app.clickup.com/t/86ajda5m0"],
@@ -677,11 +676,11 @@ async function loadLive(){
       document.getElementById("src").textContent="❌ RENDER ERR: "+re.message+" @ "+re.stack.split("\n")[1];
       return;
     }
-    document.getElementById("src").textContent="Snapshot de 17 jul 2026 — a tentar dados em direto do ClickUp…";
+    document.getElementById("src").textContent="Snapshot de 20 jul 2026 — a tentar dados em direto do ClickUp…";
     const ok=await loadLive();
     document.getElementById("src").textContent= ok
       ? "● Dados em direto do ClickUp · atualizado "+new Date().toLocaleString("pt-PT")
-      : "○ Snapshot de 17 jul 2026 (sem ligação em direto ao ClickUp neste contexto)";
+      : "○ Snapshot de 20 jul 2026 (sem ligação em direto ao ClickUp neste contexto)";
     try{ render(); }catch(re2){
       document.getElementById("src").textContent="❌ RENDER2 ERR: "+re2.message+" @ "+re2.stack.split("\n")[1];
     }
