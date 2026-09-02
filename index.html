@@ -243,17 +243,16 @@ const CAL_START=new Date(2026,5,15); // dinamização a partir de 15 jun 2026
 const SNAPSHOT={
  iris:[
  ["[FEEL YOUR HOME] Documento de Framework de Marketing","em produção",1788231600000,"https://app.clickup.com/t/86ak94ynn"],
- ["[G4 REMAX] Resumo de Regras de Anúncios","isabella corrigir",1788145200000,"https://app.clickup.com/t/86ak8k9kv"],
  ["[GERAL] Adicionar Frameworks no Blueprint","backlog",1788318000000,"https://app.clickup.com/t/86ak8dhf7"],
  ["[JH NEVES] Documento de Framework de Marketing","em produção",1787626800000,"https://app.clickup.com/t/86ak753m5"],
  ["[4IMPROVEMENTS] Análise de Viabilidade de Anúncios GPT","backlog",1788490800000,"https://app.clickup.com/t/86ak6q9nc"],
- ["[4IMPROVEMENTS] Campanha de Impulsionamento no Instagram","backlog",1788490800000,"https://app.clickup.com/t/86ak6cuq2"],
+ ["[4IMPROVEMENTS] Campanha de Impulsionamento no Instagram","em produção",1788490800000,"https://app.clickup.com/t/86ak6cuq2"],
  ["[EQUIPA SOARES] Ativação de Simulador de Vendas","backlog",1789441200000,"https://app.clickup.com/t/86ak6504f"],
  ["[GERAL] Ajuste nas Planilhas de Imóveis","backlog",1787886000000,"https://app.clickup.com/t/86ak60he0"],
  ["[HALLSTAR] Produção de Dashboard","em produção",1787886000000,"https://app.clickup.com/t/86ak5vab5"],
  ["[ANDRÉ ROSA] Agendar PAVS","entrega cliente",1788490800000,"https://app.clickup.com/t/86ak3hjxq"],
  ["[FEEL YOUR HOME] Agendar PAVS","entrega cliente",1788490800000,"https://app.clickup.com/t/86ak3hjxj"],
- ["[ADILSON] Agendar PAVS","aguardando informação",null,"https://app.clickup.com/t/86ak3hjxh"],
+ ["[ADILSON] Agendar PAVS","entrega cliente",1788490800000,"https://app.clickup.com/t/86ak3hjxh"],
  ["[ERA BENFICA] Agendar PAVS","entrega cliente",1788490800000,"https://app.clickup.com/t/86ak3hjxd"],
  ["[JH NEVES] Agendar PAVS","entrega cliente",1788490800000,"https://app.clickup.com/t/86ak3hjxa"],
  ["[CARDEIRA E COSTA] Agendar PAVS","entrega cliente",1788490800000,"https://app.clickup.com/t/86ak3hjx9"],
@@ -262,7 +261,6 @@ const SNAPSHOT={
  ["[REMAX PRESTIGE] Reunião de Onboarding com Equipa","aguardando informação",1787886000000,"https://app.clickup.com/t/86ak2r2cz"],
  ["[GERAL] Criação da Identidade Visual do Podcast","backlog",1788764400000,"https://app.clickup.com/t/86ak2mcft"],
  ["[FEEL YOUR HOME] Solicitar Vídeos dos Imóveis","aguardando informação",1786935600000,"https://app.clickup.com/t/86ak1mv6v"],
- ["[GERAL] Formatar Documento para Imóveis Atuais","isabella corrigir",1787022000000,"https://app.clickup.com/t/86ak1muez"],
  ["[JOÃO DIAS] Plano de conteúdos Setembro","entrega cliente",1786503600000,"https://app.clickup.com/t/86ajyfc83"],
  ["[AP] Plano de conteúdos de Setembro","entrega cliente",1786503600000,"https://app.clickup.com/t/86ajyfaay"],
  ["[SA TEAM] Reunião Sobre Simulador de Proprietários","em produção",1786676400000,"https://app.clickup.com/t/86ajyb5hn"],
@@ -276,7 +274,6 @@ const SNAPSHOT={
  ["[G4 REMAX] Simulador Venda de Casa","entrega cliente",1784862000000,"https://app.clickup.com/t/86ajpmvk5"],
  ["[G4 REMAX] Cronograma de Redes Sociais","aguardando informação",null,"https://app.clickup.com/t/86ajkyrek"],
  ["[PRÓPRIO T] Vídeos com IA","aguardando informação",null,"https://app.clickup.com/t/86ajawfb4"],
- ["[FEEL YOUR HOME] Novos Criativos","aguardando informação",null,"https://app.clickup.com/t/86aj91xa3"],
  ["Novos Criativos Troca de Casa","aprovado",1781161200000,"https://app.clickup.com/t/86ahxav0k"],
  ["[NR] Implementar Estratégia Troca de Casa (Junho)","backlog",1781060400000,"https://app.clickup.com/t/86ahx4adn"],
  ["[NR] Implementação de Orçamento Junho - Estratégia 3 em 1 e Troca de Casa e Ajustes de IA","backlog",1781233200000,"https://app.clickup.com/t/86ahx4a5e"],
@@ -664,11 +661,11 @@ async function loadLive(){
       document.getElementById("src").textContent="❌ RENDER ERR: "+re.message+" @ "+re.stack.split("\n")[1];
       return;
     }
-    document.getElementById("src").textContent="Snapshot de 1 set 2026 — a tentar dados em direto do ClickUp…";
+    document.getElementById("src").textContent="Snapshot de 2 set 2026 — a tentar dados em direto do ClickUp…";
     const ok=await loadLive();
     document.getElementById("src").textContent= ok
       ? "● Dados em direto do ClickUp · atualizado "+new Date().toLocaleString("pt-PT")
-      : "○ Snapshot de 1 set 2026 (sem ligação em direto ao ClickUp neste contexto)";
+      : "○ Snapshot de 2 set 2026 (sem ligação em direto ao ClickUp neste contexto)";
     try{ render(); }catch(re2){
       document.getElementById("src").textContent="❌ RENDER2 ERR: "+re2.message+" @ "+re2.stack.split("\n")[1];
     }
